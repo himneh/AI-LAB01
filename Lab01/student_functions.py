@@ -24,9 +24,50 @@ def DFS(matrix, start, end):
     # TODO: 
    
     path=[]
-    visited={}
+    visited={start:-1}
+
+    size = len(matrix)
+
+    tmp = [] #array check a node is visited or not?
+    tmp = [False for i in range(size)] #init 
+
+    # Initialize a stack of nodes and
+    # push the starting node into it
+    st = []
+    st.append(start)
+    tmp[start] = True
+    temp = False
+
+    while (len(st) > 0):
+        # Pop the top 
+        curr = st.pop()
+        #path.append(curr)
+        if(curr == end): break
+        for index in range(size):
+            if tmp[index] == False and matrix[curr][index] == 1:                           
+                st.append(index)
+                if(temp == False): visited[index] = curr
+                if(end == index): temp = True
+                tmp[index] = True
+
+     #find path            
+    res = end
+    while res != start:      
+        path.append(res)
+        res = visited[res]
+
+        # for i in visited:
+        #     if i == res:
+        #         res = visited[i]
+    path.append(start)
+    path.reverse()
+    print(path) 
+    print(visited) 
+   
 
     return visited, path
+
+
 
 def BFS(matrix, start, end):
     """
@@ -49,6 +90,8 @@ def BFS(matrix, start, end):
         Founded path
     """
 
+    # TODO: 
+    
     path=[]
     visited={start:-1}
 
@@ -88,6 +131,7 @@ def BFS(matrix, start, end):
     path.reverse()
     print(path) 
     print(visited) 
+   
     return visited, path
 
 

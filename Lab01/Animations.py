@@ -91,3 +91,8 @@ def run(input, algorithm, delay):
     update(G, pos, color_map, algorithm, 0)
     while True:
         quit_event()
+    
+
+
+    
+

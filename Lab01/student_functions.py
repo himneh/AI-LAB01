@@ -181,9 +181,47 @@ def GBFS(matrix, start, end):
     path: list
         Founded path
     """
+    """
+    REFERENCES: https://www.javatpoint.com/ai-informed-search-algorithms#:~:text=Greedy%20best%2Dfirst%20search%20algorithm,the%20advantages%20of%20both%20algorithms.
+    """
+
     # TODO: 
     path=[]
-    visited={}
+    visited={start:-1}
+
+    open = [] # QUEUE
+    close = [] # VISITED QUEUE
+
+    size = len(matrix) #size of matrix
+    open.append(start)
+    while len(open) > 0:
+        fx = [matrix[open[i]][end] for i in range(len(open))]
+        pos = fx.index(min(fx))
+        curr = open.pop(pos)
+        close.append(curr)
+        temp = False
+        #if find end node:
+        if curr == end:
+            break
+        for index in range(size):
+            if index not in close and index not in open and matrix[curr][index] == 1:                           
+                open.append(index)
+                if(temp == False): visited[index] = curr #check if found end note, stop appending visited
+                if(end == index): temp = True
+       
+    #find path            
+    res = end
+    while res != start:      
+        path.append(res)
+
+        for i in visited:
+            if i == res:
+                res = visited[i]
+    path.append(res)
+    path.reverse()
+
+    print(visited)
+    print(path)
     return visited, path
 
 def Astar(matrix, start, end, pos):
@@ -210,5 +248,6 @@ def Astar(matrix, start, end, pos):
     # TODO: 
     path=[]
     visited={}
+
     return visited, path
 

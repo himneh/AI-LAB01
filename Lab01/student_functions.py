@@ -1,5 +1,7 @@
+from dis import dis
 import numpy as np
 
+from math import sqrt
 
 def DFS(matrix, start, end):
     """
@@ -195,8 +197,9 @@ def GBFS(matrix, start, end):
     size = len(matrix) #size of matrix
     open.append(start)
     while len(open) > 0:
+        #use heuristic
         fx = [matrix[open[i]][end] for i in range(len(open))]
-        pos = fx.index(min(fx))
+        pos = fx.index(min(fx)) #find min
         curr = open.pop(pos)
         close.append(curr)
         temp = False
@@ -204,9 +207,9 @@ def GBFS(matrix, start, end):
         if curr == end:
             break
         for index in range(size):
-            if index not in close and index not in open and matrix[curr][index] == 1:                           
+            if index not in close and index not in open and matrix[curr][index] != 0:                           
                 open.append(index)
-                if(temp == False): visited[index] = curr #check if found end note, stop appending visited
+                if(temp == False): visited[index] = curr #check if found end node, stop appending visited
                 if(end == index): temp = True
        
     #find path            
@@ -245,9 +248,65 @@ def Astar(matrix, start, end, pos):
     path: list
         Founded path
     """
+    """
+    REFERENCES: https://www.stdio.vn/giai-thuat-lap-trinh/thuat-giai-a-DVnHj
+    """
+
     # TODO: 
     path=[]
-    visited={}
+    visited={start:-1}
+   
+    
+    open = [] # QUEUE
+    close = [] # VISITED QUEUE
 
+    size = len(matrix) #size of matrix
+    open.append(start)
+    fx = []
+    while len(open) > 0:
+        #use heuristic
+        for i in range(len(open)):
+            h = sqrt((pos[end][0] - pos[open[i]][0])**2 + (pos[end][1] - pos[open[i]][1])**2)
+            g = g_x(matrix,start,open[i],visited) 
+            fx.append(h + g)
+        poss = fx.index(min(fx)) #find min
+        curr = open.pop(poss)
+        close.append(curr)
+        temp = False
+        #if find end node:
+        if curr == end:
+            break
+        for index in range(size):
+            if index not in close and index not in open and matrix[curr][index] != 0:                           
+                open.append(index)
+                if(temp == False): visited[index] = curr #check if found end node, stop appending visited
+                if(end == index): temp = True
+       
+    #find path            
+    res = end
+    while res != start:      
+        path.append(res)
+
+        for i in visited:
+            if i == res:
+                res = visited[i]
+    path.append(res)
+    path.reverse()
+
+    print(visited)
+    print(path)
+    
     return visited, path
 
+
+def g_x(matrix,start,end,pathh):
+    if pathh == {}:
+        return 0
+    res = end
+    ans = 0
+    while(res !=start):
+        for i in pathh:
+            if i == res:
+                res = pathh[i]
+                ans += matrix[i][res]
+    return ans

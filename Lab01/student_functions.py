@@ -1,4 +1,5 @@
 from dis import dis
+from sys import maxsize
 import numpy as np
 
 from math import sqrt
@@ -63,8 +64,8 @@ def DFS(matrix, start, end):
         #         res = visited[i]
     path.append(start)
     path.reverse()
-    print(path) 
-    print(visited) 
+    # print(path) 
+    # print(visited) 
    
 
     return visited, path
@@ -131,8 +132,8 @@ def BFS(matrix, start, end):
                 res = visited[i]
     path.append(res)
     path.reverse()
-    print(path) 
-    print(visited) 
+    # print(path) 
+    # print(visited) 
    
     return visited, path
 
@@ -157,9 +158,90 @@ def UCS(matrix, start, end):
     path: list
         Founded path
     """
+
+    """
+    REFERENCES: https://www.educative.io/edpresso/what-is-uniform-cost-search
+    https://www.geeksforgeeks.org/uniform-cost-search-dijkstra-for-large-graphs/
+    """
+
     # TODO:  
     path=[]
-    visited={}
+    visited={start:-1}   
+    #init queue
+    queue = []
+    queue.append({'node': start, 'cost': 0})
+
+    size = len(matrix) #size of matrix
+
+    distance = [] #distance between start and nodes
+    distance = [0 for i in range(size)] 
+
+    tmp =[]  #checked array
+    tmp = [False for i in range(size)] 
+
+    temp = False   
+
+    while len(queue) != 0:      
+        #lay phan tu co distance nho nhat trong queue ra   
+        min_distance = maxsize
+        curr = -1
+        for i in range(len(queue)):               
+            if min_distance > queue[i]['cost']:
+                min_distance = queue[i]['cost']
+                curr = queue[i]['node']
+
+        queue.remove({'node': curr, 'cost': min_distance})
+               
+        if (curr == end):
+            break
+
+        tmp[curr] = True
+
+        for index in range(size):
+            if (tmp[index] == False):
+                if  matrix[curr][index] != 0:
+                    distance[index] = matrix[curr][index] + distance[curr] 
+                    visited[index] = curr                  
+                    needAdd = True
+
+                    #if node index exists at queue then erase it and re-add              
+                    for j in range(len(queue)):                     
+                        if index == queue[j]['node']:                                                      
+                            if queue[j]['cost'] >= distance[index]:
+                                queue.remove({'node': queue[j]['node'], 'cost': queue[j]['cost']})
+                            else:
+                                needAdd = False
+                                                                                                                                     
+                    if (needAdd == True):
+                        queue.append({'node': index, 'cost': distance[index]})
+
+    
+    #find path
+    ans = end  
+    while ans != start:      
+        path.append(ans)       
+        for i in visited:
+            if i == ans:              
+                ans = visited[i]
+                  
+                                   
+    path.append(ans)
+    path.reverse()
+
+    #handle special case: start adjacent to end
+    res1 = 0
+    for i in range(len(path) - 1):
+        res1 = res1 + matrix[path[i]][path[i+1]]
+
+    res2 = 0
+    if matrix[start][end] != 0:
+        res2 = matrix[start][end]
+        if res2 < res1 :
+            path = [start,end]
+            visited[end] = start
+        
+    # print(path)
+    # print(visited)
     return visited, path
 
 
@@ -223,8 +305,8 @@ def GBFS(matrix, start, end):
     path.append(res)
     path.reverse()
 
-    print(visited)
-    print(path)
+    # print(visited)
+    # print(path)
     return visited, path
 
 def Astar(matrix, start, end, pos):
@@ -301,7 +383,7 @@ def Astar(matrix, start, end, pos):
     path.append(res)
     path.reverse()
 
-    print(visited)
-    print(path)
+    # print(visited)
+    # print(path)
     
     return visited, path

@@ -5,7 +5,7 @@ from math import sqrt
 
 def DFS(matrix, start, end):
     """
-    BFS algorithm:
+    DFS algorithm:
     Parameters:
     ---------------------------
     matrix: np array 
@@ -73,7 +73,7 @@ def DFS(matrix, start, end):
 
 def BFS(matrix, start, end):
     """
-    DFS algorithm
+    BFS algorithm
      Parameters:
     ---------------------------
     matrix: np array 
@@ -262,14 +262,21 @@ def Astar(matrix, start, end, pos):
 
     size = len(matrix) #size of matrix
     open.append(start)
-    fx = []
+
+    distances = [] #distance between start and nodes
+    distances = [0 for i in range(size)]
+    
     while len(open) > 0:
         #use heuristic
+        fx = []
         for i in range(len(open)):
             h = sqrt((pos[end][0] - pos[open[i]][0])**2 + (pos[end][1] - pos[open[i]][1])**2)
-            g = g_x(matrix,start,open[i],visited) 
+            g = distances[i]
             fx.append(h + g)
         poss = fx.index(min(fx)) #find min
+        # print(fx)
+        # print(poss)
+        # print(open)
         curr = open.pop(poss)
         close.append(curr)
         temp = False
@@ -279,6 +286,7 @@ def Astar(matrix, start, end, pos):
         for index in range(size):
             if index not in close and index not in open and matrix[curr][index] != 0:                           
                 open.append(index)
+                distances[index] = matrix[curr][index] + distances[curr]
                 if(temp == False): visited[index] = curr #check if found end node, stop appending visited
                 if(end == index): temp = True
        
@@ -297,16 +305,3 @@ def Astar(matrix, start, end, pos):
     print(path)
     
     return visited, path
-
-
-def g_x(matrix,start,end,pathh):
-    if pathh == {}:
-        return 0
-    res = end
-    ans = 0
-    while(res !=start):
-        for i in pathh:
-            if i == res:
-                res = pathh[i]
-                ans += matrix[i][res]
-    return ans
